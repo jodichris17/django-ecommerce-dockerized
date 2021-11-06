@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  ecom_app:
+    container_name: ecom_app
+    volumes:
+      - /home/atb/project/django-ecommerce/django-simple-ecommerce/static:/static
+    build:
+      context: .
+    ports:
+      - "8000"
+    depends_on: 
+      - ecom_db
+  ecom_nginx:
+    container_name: ecom_nginx
+    build: ./nginx
+    volumes:
+      - /home/atb/project/django-ecommerce/django-simple-ecommerce/static:/static
+    ports:
+      - "8081:80"
+    depends_on:
+      - ecom_app
+  ecom_db:
+    image: postgres:13.0-alpine
+    container_name: ecom_db
+    volumes:
+      - ecom_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432"
+volumes:
+  ecom_static:
+  ecom_data:
